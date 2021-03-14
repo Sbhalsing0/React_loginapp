@@ -28,14 +28,6 @@ pipeline {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
-        stage('Deploy Updated Image to Cluster'){
-            steps {
-                sh '''
-                    echo "HELLO"
-                    '''
-            }
-        }
-        
         stage('Update Kube Config'){
             steps {
                 withAWS(region:'us-east-1',credentials:'aws') {
@@ -49,6 +41,7 @@ pipeline {
                     export IMAGE="$registry:$BUILD_NUMBER"
                     sed -ie "s~IMAGE~$IMAGE~g" kubernetes/container.yml
                     kubectl apply -f ./kubernetes
+                    '''
             }
         }
     }
