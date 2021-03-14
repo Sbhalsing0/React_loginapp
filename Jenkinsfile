@@ -28,21 +28,23 @@ pipeline {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
-        stage('Update Kube Config'){
-            steps {
-                withAWS(region:'us-east-1',credentials:'aws') {
-                    sh 'aws eks --region us-east-1 update-kubeconfig --name sanket_eks'                    
-                }
-            }
-        }
         stage('Deploy Updated Image to Cluster'){
             steps {
                 sh '''
-                    export IMAGE="$registry:$BUILD_NUMBER"
-                    sed -ie "s~IMAGE~$IMAGE~g" kubernetes/container.yml
-                    kubectl apply -f ./kubernetes
+                    echo "HELLO"
                     '''
             }
         }
-    }
+        stage('Update Kube Config'){
+        steps{
+          echo "Deploy on k8s"
+
+          kubernetesDeploy(
+            kubeconfigId: 'kube_config',
+            configs: 'Deployment.yml',
+            enableConfigSubstitution: true
+          )
+        }
+     }
+  }
 }
