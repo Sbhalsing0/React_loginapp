@@ -1,6 +1,8 @@
 # Step 1
 FROM node:10-alpine as build-step
 
+MAINTAINER SANKET
+
 RUN mkdir /app
 
 WORKDIR /app
